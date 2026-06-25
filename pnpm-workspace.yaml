@@ -1,0 +1,15 @@
+packages:
+  - "apps/*"
+  - "packages/*"
+  - "e2e"
+
+# pnpm v10+ requires build scripts to be opted in explicitly (security default).
+# These are the only dependencies that legitimately need a postinstall build step.
+allowBuilds:
+  "@swc/core": true
+  esbuild: true
+  "@prisma/client": true
+  "@prisma/engines": true
+  prisma: true
+  "@scarf/scarf": false
+  protobufjs: false

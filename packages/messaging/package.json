@@ -1,0 +1,32 @@
+{
+  "name": "@hotdrop/messaging",
+  "version": "0.0.1",
+  "description": "Transactional outbox relay + inbox idempotency guard over injectable ports (pure TS, no infra)",
+  "private": true,
+  "license": "UNLICENSED",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@hotdrop/eslint-config": "workspace:*",
+    "@hotdrop/typescript-config": "workspace:*"
+  },
+  "dependencies": {
+    "@opentelemetry/api": "^1.9.1"
+  }
+}

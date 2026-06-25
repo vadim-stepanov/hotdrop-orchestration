@@ -1,0 +1,30 @@
+meta {
+  name: Place order
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/api/v1/orders
+  body: json
+  auth: none
+}
+
+headers {
+  X-User-Id: {{userId}}
+}
+
+body:json {
+  {
+    "deliveryAddress": "1 Main St",
+    "lines": [{ "dropId": "{{dropId}}", "qty": 2 }]
+  }
+}
+
+vars:post-response {
+  orderId: res.body.orderId
+}
+
+docs {
+  Starts the saga. Captures `orderId` for the requests below.
+}

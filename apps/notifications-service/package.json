@@ -1,0 +1,37 @@
+{
+  "name": "@hotdrop/notifications-service",
+  "version": "0.0.1",
+  "description": "Domain-event reactor (emulated, logs)",
+  "private": true,
+  "license": "UNLICENSED",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "nest build",
+    "start": "nest start",
+    "start:dev": "nest start --watch",
+    "start:prod": "node dist/main",
+    "lint": "eslint \"{src,test}/**/*.ts\"",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "test:e2e": "vitest run test/"
+  },
+  "dependencies": {
+    "@hotdrop/contracts": "workspace:*",
+    "@hotdrop/messaging": "workspace:*",
+    "@hotdrop/telemetry": "workspace:*",
+    "@nestjs/common": "^11.0.1",
+    "@nestjs/core": "^11.0.1",
+    "@nestjs/microservices": "^11.0.1",
+    "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/swagger": "^11.4.4",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@hotdrop/eslint-config": "workspace:*",
+    "@hotdrop/typescript-config": "workspace:*"
+  }
+}

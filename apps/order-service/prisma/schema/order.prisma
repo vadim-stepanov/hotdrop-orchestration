@@ -1,0 +1,65 @@
+// Order context — the order aggregate plus the orchestrator's persisted saga state
+// (durable state machine, resumes after restart). Cross-service refs
+// (dropId, reservationId, paymentId, assignmentId) are ids only.
+
+enum OrderStatus {
+  PLACED
+  PORTIONS_RESERVED
+  PAYMENT_AUTHORIZED
+  ACCEPTED
+  PREPARING
+  READY
+  COURIER_ASSIGNED
+  PICKED_UP
+  DELIVERED
+  COMPLETED
+  CANCELLED
+  REJECTED
+
+  @@map("order_status")
+}
+
+model Order {
+  id              String      @id @default(cuid())
+  customerId      String      @map("customer_id")
+  status          OrderStatus @default(PLACED)
+  deliveryAddress String      @map("delivery_address")
+  totalCents      Int         @map("total_cents")
+  createdAt       DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt       DateTime    @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  lines OrderLine[]
+  saga  SagaInstance?
+
+  @@index([customerId])
+  @@index([status])
+  @@map("orders")
+}
+
+model OrderLine {
+  id             String @id @default(cuid())
+  orderId        String @map("order_id")
+  dropId         String @map("drop_id")
+  qty            Int
+  unitPriceCents Int    @map("unit_price_cents")
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@index([orderId])
+  @@map("order_lines")
+}
+
+model SagaInstance {
+  orderId       String   @id @map("order_id")
+  step          String
+  compensating  Boolean  @default(false)
+  reservationId String?  @map("reservation_id")
+  paymentId     String?  @map("payment_id")
+  assignmentId  String?  @map("assignment_id")
+  lastError     String?  @map("last_error")
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@map("saga_instances")
+}

@@ -1,0 +1,13 @@
+{
+  "name": "@hotdrop/eslint-config",
+  "version": "0.0.1",
+  "private": true,
+  "license": "UNLICENSED",
+  "type": "module",
+  "exports": {
+    ".": "./base.mjs"
+  },
+  "files": [
+    "base.mjs"
+  ]
+}

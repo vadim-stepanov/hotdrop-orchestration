@@ -1,0 +1,96 @@
+// Kitchen context — kitchens, drops, dishes, and the portion inventory that is the
+// saga's first failable step. Portion contention is guarded by an atomic conditional
+// decrement (UPDATE … WHERE available >= qty; 0 rows → SOLD_OUT) plus CHECK invariants
+// added in the migration. Cross-service refs (orderId) are ids only — no FK to others.
+
+enum DropStatus {
+  DRAFT
+  SCHEDULED
+  LIVE
+  SOLD_OUT
+  CLOSED
+
+  @@map("drop_status")
+}
+
+enum ReservationStatus {
+  HELD
+  CONFIRMED
+  RELEASED
+
+  @@map("reservation_status")
+}
+
+model Kitchen {
+  id        String   @id @default(cuid())
+  name      String
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  drops Drop[]
+
+  @@map("kitchens")
+}
+
+model Drop {
+  id            String     @id @default(cuid())
+  kitchenId     String     @map("kitchen_id")
+  status        DropStatus @default(SCHEDULED)
+  windowFrom    DateTime   @map("window_from") @db.Timestamptz(3)
+  windowTo      DateTime   @map("window_to") @db.Timestamptz(3)
+  totalPortions Int        @map("total_portions")
+  // Portion inventory embodied on the drop row (reserved + available = total). The
+  // reservation step decrements `available` atomically; release restores it.
+  available     Int
+  reserved      Int        @default(0)
+  createdAt     DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt     DateTime   @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  kitchen          Kitchen           @relation(fields: [kitchenId], references: [id], onDelete: Cascade)
+  dishes           Dish[]
+  reservationItems ReservationItem[]
+
+  @@index([status])
+  @@index([kitchenId])
+  @@map("drops")
+}
+
+model Dish {
+  id          String  @id @default(cuid())
+  dropId      String  @map("drop_id")
+  name        String
+  description String?
+  priceCents  Int     @map("price_cents")
+
+  drop Drop @relation(fields: [dropId], references: [id], onDelete: Cascade)
+
+  @@index([dropId])
+  @@map("dishes")
+}
+
+model Reservation {
+  id        String            @id @default(cuid())
+  orderId   String            @unique @map("order_id")
+  status    ReservationStatus @default(HELD)
+  expiresAt DateTime          @map("expires_at") @db.Timestamptz(3)
+  createdAt DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime          @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  items ReservationItem[]
+
+  @@index([status, expiresAt])
+  @@map("reservations")
+}
+
+model ReservationItem {
+  id            String @id @default(cuid())
+  reservationId String @map("reservation_id")
+  dropId        String @map("drop_id")
+  qty           Int
+
+  reservation Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+  drop        Drop        @relation(fields: [dropId], references: [id])
+
+  @@index([reservationId])
+  @@index([dropId])
+  @@map("reservation_items")
+}

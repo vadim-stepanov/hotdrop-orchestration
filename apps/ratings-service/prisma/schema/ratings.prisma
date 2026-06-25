@@ -1,0 +1,25 @@
+// Ratings context — a rating per COMPLETED order and support tickets
+// (a created ticket emits SupportTicketCreated → notifications). Thin, post-saga.
+
+model Rating {
+  id         String   @id @default(cuid())
+  dropId     String   @map("drop_id")
+  orderId    String   @unique @map("order_id")
+  customerId String   @map("customer_id")
+  score      Int
+  comment    String?
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@index([dropId])
+  @@map("ratings")
+}
+
+model SupportTicket {
+  id         String   @id @default(cuid())
+  customerId String   @map("customer_id")
+  subject    String
+  body       String
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  @@map("support_tickets")
+}

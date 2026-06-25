@@ -1,0 +1,43 @@
+// Dispatch context — emulated gig-courier assignment (offer → accept/decline → reassign)
+// and delivery status (ASSIGNED → PICKED_UP → DELIVERED). Couriers are emulated; only
+// the assignment/delivery domain is modeled.
+
+enum CourierAssignmentStatus {
+  OFFERED
+  ACCEPTED
+  DECLINED
+  CANCELLED
+
+  @@map("courier_assignment_status")
+}
+
+enum DeliveryStatus {
+  ASSIGNED
+  PICKED_UP
+  DELIVERED
+
+  @@map("delivery_status")
+}
+
+model CourierAssignment {
+  id        String                  @id @default(cuid())
+  orderId   String                  @map("order_id")
+  courierId String                  @map("courier_id")
+  status    CourierAssignmentStatus @default(OFFERED)
+  createdAt DateTime                @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime                @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([orderId])
+  @@map("courier_assignments")
+}
+
+model Delivery {
+  id           String         @id @default(cuid())
+  orderId      String         @unique @map("order_id")
+  assignmentId String         @map("assignment_id")
+  status       DeliveryStatus @default(ASSIGNED)
+  createdAt    DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("deliveries")
+}

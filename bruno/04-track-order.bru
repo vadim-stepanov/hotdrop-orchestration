@@ -1,0 +1,21 @@
+meta {
+  name: Track order
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/api/v1/orders/{{orderId}}
+  body: none
+  auth: none
+}
+
+headers {
+  X-User-Id: {{userId}}
+}
+
+docs {
+  Re-send until `status` is COMPLETED — the saga takes a few seconds to run through
+  reserve → pay → accept → courier → deliver → capture. For live updates, a WebSocket
+  client can `track` the same orderId instead of polling.
+}

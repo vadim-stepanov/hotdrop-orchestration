@@ -1,0 +1,23 @@
+// Payment context — emulated gateway (authorize → capture/void/refund). Idempotent by
+// orderId (unique), so a retried AuthorizePayment command returns the same payment.
+
+enum PaymentStatus {
+  AUTHORIZED
+  CAPTURED
+  VOIDED
+  REFUNDED
+  FAILED
+
+  @@map("payment_status")
+}
+
+model Payment {
+  id          String        @id @default(cuid())
+  orderId     String        @unique @map("order_id")
+  status      PaymentStatus
+  amountCents Int           @map("amount_cents")
+  createdAt   DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("payments")
+}

@@ -1,0 +1,640 @@
+{
+  "openapi": "3.0.0",
+  "paths": {
+    "/api/v1/drops": {
+      "get": {
+        "operationId": "DropsController_list_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Live drops on the shelf.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DropResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "drops"
+        ]
+      }
+    },
+    "/api/v1/drops/{dropId}": {
+      "get": {
+        "operationId": "DropsController_detail_v1",
+        "parameters": [
+          {
+            "name": "dropId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DropResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "drops"
+        ]
+      }
+    },
+    "/api/v1/drops/{dropId}/ratings": {
+      "get": {
+        "operationId": "DropsController_ratings_v1",
+        "parameters": [
+          {
+            "name": "dropId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RatingResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "drops"
+        ]
+      }
+    },
+    "/api/v1/orders": {
+      "post": {
+        "operationId": "OrdersController_place_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlaceOrderDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlaceOrderResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "X-User-Id": []
+          }
+        ],
+        "tags": [
+          "orders"
+        ]
+      },
+      "get": {
+        "operationId": "OrdersController_list_v1",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/OrderResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "X-User-Id": []
+          }
+        ],
+        "tags": [
+          "orders"
+        ]
+      }
+    },
+    "/api/v1/orders/{orderId}": {
+      "get": {
+        "operationId": "OrdersController_get_v1",
+        "parameters": [
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "X-User-Id": []
+          }
+        ],
+        "tags": [
+          "orders"
+        ]
+      }
+    },
+    "/api/v1/orders/{orderId}/cancel": {
+      "post": {
+        "operationId": "OrdersController_cancel_v1",
+        "parameters": [
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrderResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "X-User-Id": []
+          }
+        ],
+        "tags": [
+          "orders"
+        ]
+      }
+    },
+    "/api/v1/orders/{orderId}/ratings": {
+      "post": {
+        "operationId": "OrdersController_rate_v1",
+        "parameters": [
+          {
+            "name": "orderId",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateRatingDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RatingResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "X-User-Id": []
+          }
+        ],
+        "tags": [
+          "orders"
+        ]
+      }
+    },
+    "/api/v1/support": {
+      "post": {
+        "operationId": "SupportController_create_v1",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateSupportTicketDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SupportTicketResponseDto"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "X-User-Id": []
+          }
+        ],
+        "tags": [
+          "support"
+        ]
+      }
+    },
+    "/api/health": {
+      "get": {
+        "operationId": "HealthController_check",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Liveness probe."
+          }
+        },
+        "tags": [
+          "health"
+        ]
+      }
+    }
+  },
+  "info": {
+    "title": "HotDrop API",
+    "description": "HotDrop — Orchestration Saga. The canonical REST contract (frozen by B1).",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "scheme": "bearer",
+        "bearerFormat": "JWT",
+        "type": "http",
+        "description": "Emulated auth token."
+      },
+      "X-User-Id": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-User-Id"
+      }
+    },
+    "schemas": {
+      "DishResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "description": "May be empty."
+          },
+          "priceCents": {
+            "type": "number",
+            "description": "Price in cents."
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "description",
+          "priceCents"
+        ]
+      },
+      "DropResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "kitchenId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "DRAFT",
+              "SCHEDULED",
+              "LIVE",
+              "SOLD_OUT",
+              "CLOSED"
+            ]
+          },
+          "windowFrom": {
+            "type": "string",
+            "description": "Delivery window start (ISO-8601)."
+          },
+          "windowTo": {
+            "type": "string",
+            "description": "Delivery window end (ISO-8601)."
+          },
+          "totalPortions": {
+            "type": "number"
+          },
+          "available": {
+            "type": "number",
+            "description": "Portions still available."
+          },
+          "pricePerPortionCents": {
+            "type": "number",
+            "description": "Price for one portion of the drop, in cents."
+          },
+          "dishes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DishResponseDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "kitchenId",
+          "status",
+          "windowFrom",
+          "windowTo",
+          "totalPortions",
+          "available",
+          "pricePerPortionCents",
+          "dishes"
+        ]
+      },
+      "RatingResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "dropId": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "string"
+          },
+          "score": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "comment": {
+            "type": "string",
+            "description": "May be empty."
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "ISO-8601."
+          }
+        },
+        "required": [
+          "id",
+          "dropId",
+          "customerId",
+          "score",
+          "comment",
+          "createdAt"
+        ]
+      },
+      "PlaceOrderLineDto": {
+        "type": "object",
+        "properties": {
+          "dropId": {
+            "type": "string"
+          },
+          "qty": {
+            "type": "number",
+            "minimum": 1
+          }
+        },
+        "required": [
+          "dropId",
+          "qty"
+        ]
+      },
+      "PlaceOrderDto": {
+        "type": "object",
+        "properties": {
+          "deliveryAddress": {
+            "type": "string"
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PlaceOrderLineDto"
+            }
+          }
+        },
+        "required": [
+          "deliveryAddress",
+          "lines"
+        ]
+      },
+      "PlaceOrderResponseDto": {
+        "type": "object",
+        "properties": {
+          "orderId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "orderId",
+          "status"
+        ]
+      },
+      "OrderLineResponseDto": {
+        "type": "object",
+        "properties": {
+          "dropId": {
+            "type": "string"
+          },
+          "qty": {
+            "type": "number"
+          },
+          "unitPriceCents": {
+            "type": "number",
+            "description": "Resolved unit price in cents."
+          }
+        },
+        "required": [
+          "dropId",
+          "qty",
+          "unitPriceCents"
+        ]
+      },
+      "OrderResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "PLACED",
+              "PORTIONS_RESERVED",
+              "PAYMENT_AUTHORIZED",
+              "ACCEPTED",
+              "PREPARING",
+              "READY",
+              "COURIER_ASSIGNED",
+              "PICKED_UP",
+              "DELIVERED",
+              "COMPLETED",
+              "CANCELLED",
+              "REJECTED"
+            ]
+          },
+          "deliveryAddress": {
+            "type": "string"
+          },
+          "totalCents": {
+            "type": "number",
+            "description": "Order total in cents."
+          },
+          "lines": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OrderLineResponseDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "customerId",
+          "status",
+          "deliveryAddress",
+          "totalCents",
+          "lines"
+        ]
+      },
+      "CreateRatingDto": {
+        "type": "object",
+        "properties": {
+          "dropId": {
+            "type": "string",
+            "description": "Drop being rated (must belong to the order)."
+          },
+          "score": {
+            "type": "number",
+            "minimum": 1,
+            "maximum": 5
+          },
+          "comment": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "dropId",
+          "score"
+        ]
+      },
+      "CreateSupportTicketDto": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string"
+          },
+          "body": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "subject",
+          "body"
+        ]
+      },
+      "SupportTicketResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "customerId": {
+            "type": "string"
+          },
+          "subject": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "description": "ISO-8601."
+          }
+        },
+        "required": [
+          "id",
+          "customerId",
+          "subject",
+          "createdAt"
+        ]
+      }
+    }
+  }
+}

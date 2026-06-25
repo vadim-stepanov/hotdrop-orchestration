@@ -1,0 +1,130 @@
+syntax = "proto3";
+
+package hotdrop;
+
+// Internal sync transport: the gateway calls these over gRPC for reads and
+// the place/cancel/rate commands. Saga steps remain async over RabbitMQ. Money in cents,
+// timestamps ISO-8601 strings.
+
+// ---- kitchen: drop catalog reads ----
+service KitchenQuery {
+  rpc ListDrops(ListDropsRequest) returns (DropList);
+  rpc GetDrop(GetDropRequest) returns (Drop);
+}
+
+message ListDropsRequest {
+  string status = 1; // optional filter (e.g. "LIVE"); empty = live drops
+}
+message GetDropRequest {
+  string dropId = 1;
+}
+message Dish {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  int32 priceCents = 4;
+}
+message Drop {
+  string id = 1;
+  string kitchenId = 2;
+  string status = 3;
+  string windowFrom = 4;
+  string windowTo = 5;
+  int32 totalPortions = 6;
+  int32 available = 7;
+  int32 pricePerPortionCents = 8;
+  repeated Dish dishes = 9;
+}
+message DropList {
+  repeated Drop drops = 1;
+}
+
+// ---- order: aggregate command + query ----
+service OrderQuery {
+  rpc PlaceOrder(PlaceOrderRequest) returns (PlaceOrderResponse);
+  rpc GetOrder(GetOrderRequest) returns (Order);
+  rpc ListOrders(ListOrdersRequest) returns (OrderList);
+  rpc CancelOrder(CancelOrderRequest) returns (Order);
+}
+
+message OrderLineInput {
+  string dropId = 1;
+  int32 qty = 2;
+  int32 unitPriceCents = 3;
+}
+message PlaceOrderRequest {
+  string customerId = 1;
+  string deliveryAddress = 2;
+  repeated OrderLineInput lines = 3;
+}
+message PlaceOrderResponse {
+  string orderId = 1;
+  string status = 2;
+}
+message GetOrderRequest {
+  string orderId = 1;
+  string customerId = 2;
+}
+message ListOrdersRequest {
+  string customerId = 1;
+}
+message CancelOrderRequest {
+  string orderId = 1;
+  string customerId = 2;
+}
+message OrderLine {
+  string dropId = 1;
+  int32 qty = 2;
+  int32 unitPriceCents = 3;
+}
+message Order {
+  string id = 1;
+  string customerId = 2;
+  string status = 3;
+  string deliveryAddress = 4;
+  int32 totalCents = 5;
+  repeated OrderLine lines = 6;
+}
+message OrderList {
+  repeated Order orders = 1;
+}
+
+// ---- ratings + support ----
+service RatingsQuery {
+  rpc CreateRating(CreateRatingRequest) returns (Rating);
+  rpc ListRatings(ListRatingsRequest) returns (RatingList);
+  rpc CreateSupportTicket(CreateSupportTicketRequest) returns (SupportTicket);
+}
+
+message CreateRatingRequest {
+  string orderId = 1;
+  string dropId = 2;
+  string customerId = 3;
+  int32 score = 4;
+  string comment = 5;
+}
+message Rating {
+  string id = 1;
+  string dropId = 2;
+  string customerId = 3;
+  int32 score = 4;
+  string comment = 5;
+  string createdAt = 6;
+}
+message ListRatingsRequest {
+  string dropId = 1;
+}
+message RatingList {
+  repeated Rating ratings = 1;
+}
+message CreateSupportTicketRequest {
+  string customerId = 1;
+  string subject = 2;
+  string body = 3;
+}
+message SupportTicket {
+  string id = 1;
+  string customerId = 2;
+  string subject = 3;
+  string createdAt = 4;
+}

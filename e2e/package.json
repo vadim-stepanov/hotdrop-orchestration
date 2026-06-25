@@ -1,0 +1,13 @@
+{
+  "name": "@hotdrop/e2e",
+  "version": "0.0.1",
+  "private": true,
+  "license": "UNLICENSED",
+  "description": "Distributed e2e — drives the public contract against a running stack",
+  "scripts": {
+    "test:e2e": "vitest run test/"
+  },
+  "devDependencies": {
+    "socket.io-client": "^4.8.3"
+  }
+}

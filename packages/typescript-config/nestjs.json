@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "NestJS — service apps (extends base; each app sets outDir/rootDir)",
+  "extends": "./base.json",
+  "compilerOptions": {
+    "declaration": false,
+    "noImplicitAny": true,
+    "strictBindCallApply": true,
+    "noImplicitThis": true
+  }
+}

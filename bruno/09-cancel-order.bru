@@ -1,0 +1,22 @@
+meta {
+  name: Cancel order
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}/api/v1/orders/{{orderId}}/cancel
+  body: none
+  auth: none
+}
+
+headers {
+  X-User-Id: {{userId}}
+}
+
+docs {
+  Cancellation is allowed only before the kitchen starts preparing (domain policy).
+  Against an order that has already reached PREPARING/COMPLETED it returns 409 by design.
+  To see the compensations (void payment + release portions → CANCELLED), place a fresh
+  order and cancel it immediately — not as part of the happy-path runner.
+}

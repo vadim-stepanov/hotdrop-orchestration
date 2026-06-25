@@ -1,0 +1,44 @@
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: hotdrop
+      POSTGRES_USER: hotdrop
+      POSTGRES_PASSWORD: dev
+    # Host port 5450 (distinct per repo so sibling projects can coexist; cluster A
+    # used 5442–5446). Container stays on 5432. One container, one database per service
+    # (database-per-service) — created by the init script below on first start.
+    ports: ["5450:5432"]
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - ./docker/init-databases.sql:/docker-entrypoint-initdb.d/init-databases.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U hotdrop -d hotdrop"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    environment:
+      RABBITMQ_DEFAULT_USER: hotdrop
+      RABBITMQ_DEFAULT_PASS: dev
+    # amqp 5673, management UI 15673 (distinct from cluster A's 5672/15672 so both
+    # clusters can run simultaneously). http://localhost:15673
+    ports: ["5673:5672", "15673:15672"]
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  jaeger:
+    image: jaegertracing/all-in-one:1.60
+    environment:
+      COLLECTOR_OTLP_ENABLED: "true"
+    # UI on 16686; OTLP receivers on 4318 (http) / 4317 (grpc). Services export traces
+    # here (OTEL_EXPORTER_OTLP_ENDPOINT) so one saga is visible across all of them.
+    ports: ["16686:16686", "4318:4318", "4317:4317"]
+
+volumes:
+  postgres-data:

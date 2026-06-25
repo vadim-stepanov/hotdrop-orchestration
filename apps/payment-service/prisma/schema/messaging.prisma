@@ -1,0 +1,22 @@
+// Transactional outbox + inbox (packages/messaging). Outbox rows are written in the same
+// local transaction as the domain change; a relay publishes unpublished rows to RabbitMQ.
+// Inbox records processed message ids for idempotent consume.
+
+model OutboxMessage {
+  id          String    @id
+  type        String
+  payload     Json
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  publishedAt DateTime? @map("published_at") @db.Timestamptz(3)
+  traceParent String?  @map("trace_parent")
+
+  @@index([publishedAt, createdAt])
+  @@map("outbox_messages")
+}
+
+model InboxMessage {
+  messageId   String   @id @map("message_id")
+  processedAt DateTime @default(now()) @map("processed_at") @db.Timestamptz(3)
+
+  @@map("inbox_messages")
+}

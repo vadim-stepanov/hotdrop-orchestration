@@ -1,0 +1,31 @@
+{
+  "name": "@hotdrop/contracts",
+  "version": "0.0.1",
+  "description": "Shared contracts: saga commands/replies + domain events + cross-service enums + broker topology (pure TS, no infra)",
+  "private": true,
+  "license": "UNLICENSED",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./proto": "./proto/hotdrop.proto"
+  },
+  "files": [
+    "dist",
+    "proto"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run --passWithNoTests",
+    "test:watch": "vitest"
+  },
+  "devDependencies": {
+    "@hotdrop/eslint-config": "workspace:*",
+    "@hotdrop/typescript-config": "workspace:*"
+  }
+}
